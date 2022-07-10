@@ -30,25 +30,21 @@ func main() {
 			typeOfAnimal: "Dog",
 			nameOfAnimal: "Dog11",
 			animalWeight: 15,
-			feedingNorm:  feedingNormDog,
 		},
 		cat{
 			typeOfAnimal: "Cat",
 			nameOfAnimal: "Cat11",
 			animalWeight: 5,
-			feedingNorm:  feedingNormCat,
 		},
 		cow{
 			typeOfAnimal: "Cow",
 			nameOfAnimal: "Cow11",
 			animalWeight: 300,
-			feedingNorm:  feedingNormCow,
 		},
 		cow{
 			typeOfAnimal: "Cow",
 			nameOfAnimal: "Cow22",
 			animalWeight: 250,
-			feedingNorm:  feedingNormCow,
 		},
 	}
 	resultAllFoodForAllAnimals := countingAmountOfFeed(allAnimalsInFarm)
@@ -59,14 +55,13 @@ func main() {
 func countingAmountOfFeed(allAnimalsInFarm []Animals) int {
 	var result int
 	for _, v := range allAnimalsInFarm {
-		needFoodPerWeight := v.getAnimalWeight() * v.getFeedingNorm()
-		result += needFoodPerWeight
+		result += v.getFeedingNorm()
 		fmt.Printf(
 			"Animal type: %s, name: %s, weight: %d kg, need feed per month: %d kg\n",
 			v.getTypeOfAnimal(),
 			v.getNameOfAnimal(),
 			v.getAnimalWeight(),
-			needFoodPerWeight,
+			v.getFeedingNorm(),
 		)
 	}
 	return result

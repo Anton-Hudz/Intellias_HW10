@@ -1,11 +1,5 @@
 package main
 
-const (
-	feedingNormDog = 10 / 5
-	feedingNormCat = 7
-	feedingNormCow = 25
-)
-
 type dog struct {
 	typeOfAnimal string
 	nameOfAnimal string
@@ -26,6 +20,8 @@ func (d dog) getAnimalWeight() int {
 }
 
 func (d dog) getFeedingNorm() int {
+	feedingNormDog := 10 / 5
+	d.feedingNorm = feedingNormDog * d.animalWeight
 	return d.feedingNorm
 }
 
@@ -49,6 +45,8 @@ func (c cat) getAnimalWeight() int {
 }
 
 func (c cat) getFeedingNorm() int {
+	feedingNormCat := 7
+	c.feedingNorm = feedingNormCat * c.animalWeight
 	return c.feedingNorm
 }
 
@@ -72,5 +70,7 @@ func (c cow) getAnimalWeight() int {
 }
 
 func (c cow) getFeedingNorm() int {
+	feedingNormCow := 25
+	c.feedingNorm = feedingNormCow * c.animalWeight
 	return c.feedingNorm
 }
