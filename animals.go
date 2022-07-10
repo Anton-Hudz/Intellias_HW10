@@ -13,15 +13,15 @@ type dog struct {
 	feedingNorm  int
 }
 
-func (d dog) gettypeOfAnimal() string {
+func (d dog) getTypeOfAnimal() string {
 	return d.typeOfAnimal
 }
 
-func (d dog) getnameOfAnimal() string {
+func (d dog) getNameOfAnimal() string {
 	return d.nameOfAnimal
 }
 
-func (d dog) getanimalWeight() int {
+func (d dog) getAnimalWeight() int {
 	return d.animalWeight
 }
 
@@ -36,15 +36,15 @@ type cat struct {
 	feedingNorm  int
 }
 
-func (c cat) gettypeOfAnimal() string {
+func (c cat) getTypeOfAnimal() string {
 	return c.typeOfAnimal
 }
 
-func (c cat) getnameOfAnimal() string {
+func (c cat) getNameOfAnimal() string {
 	return c.nameOfAnimal
 }
 
-func (c cat) getanimalWeight() int {
+func (c cat) getAnimalWeight() int {
 	return c.animalWeight
 }
 
@@ -59,15 +59,15 @@ type cow struct {
 	feedingNorm  int
 }
 
-func (c cow) gettypeOfAnimal() string {
+func (c cow) getTypeOfAnimal() string {
 	return c.typeOfAnimal
 }
 
-func (c cow) getnameOfAnimal() string {
+func (c cow) getNameOfAnimal() string {
 	return c.nameOfAnimal
 }
 
-func (c cow) getanimalWeight() int {
+func (c cow) getAnimalWeight() int {
 	return c.animalWeight
 }
 

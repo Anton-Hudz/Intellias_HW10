@@ -10,14 +10,14 @@ type Animals interface {
 }
 
 type typeForAnimal interface {
-	gettypeOfAnimal() string
+	getTypeOfAnimal() string
 }
 
 type nameForAnimal interface {
-	getnameOfAnimal() string
+	getNameOfAnimal() string
 }
 type weightForAnimal interface {
-	getanimalWeight() int
+	getAnimalWeight() int
 }
 
 type foodForAnimal interface {
@@ -51,21 +51,25 @@ func main() {
 			feedingNorm:  feedingNormCow,
 		},
 	}
+	resultAllFoodForAllAnimals := countingAmountOfFeed(allAnimalsInFarm)
+	fmt.Printf("All animals need %d kg of feed per month", resultAllFoodForAllAnimals)
 
-	var resultAllFoodForAllAnimals int
+}
 
+func countingAmountOfFeed(allAnimalsInFarm []Animals) int {
+	var result int
 	for _, v := range allAnimalsInFarm {
-		needFoodPerWeight := v.getanimalWeight() * v.getFeedingNorm()
-		resultAllFoodForAllAnimals += needFoodPerWeight
+		needFoodPerWeight := v.getAnimalWeight() * v.getFeedingNorm()
+		result += needFoodPerWeight
 		fmt.Printf(
 			"Animal type: %s, name: %s, weight: %d kg, need feed per month: %d kg\n",
-			v.gettypeOfAnimal(),
-			v.getnameOfAnimal(),
-			v.getanimalWeight(),
+			v.getTypeOfAnimal(),
+			v.getNameOfAnimal(),
+			v.getAnimalWeight(),
 			needFoodPerWeight,
 		)
 	}
-	fmt.Printf("All animals need %d kg of feed per month", resultAllFoodForAllAnimals)
+	return result
 
 }
 
