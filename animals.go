@@ -13,7 +13,6 @@ type dog struct {
 	typeOfAnimal string
 	nameOfAnimal string
 	animalWeight int
-	feedingNorm  int
 	edibleAnimal bool
 	minWeight    int
 }
@@ -31,8 +30,8 @@ func (d dog) getAnimalWeight() int {
 }
 
 func (d dog) getFeedingNorm() int {
-	d.feedingNorm = feedingNormDog * d.animalWeight
-	return d.feedingNorm
+	feedingNorm := feedingNormDog * d.animalWeight
+	return feedingNorm
 }
 
 func (d dog) getEdibleAnimal() bool {
@@ -48,7 +47,6 @@ type cat struct {
 	typeOfAnimal string
 	nameOfAnimal string
 	animalWeight int
-	feedingNorm  int
 	edibleAnimal bool
 	minWeight    int
 }
@@ -66,8 +64,8 @@ func (c cat) getAnimalWeight() int {
 }
 
 func (c cat) getFeedingNorm() int {
-	c.feedingNorm = feedingNormCat * c.animalWeight
-	return c.feedingNorm
+	feedingNorm := feedingNormCat * c.animalWeight
+	return feedingNorm
 }
 
 func (c cat) getEdibleAnimal() bool {
@@ -83,7 +81,6 @@ type cow struct {
 	typeOfAnimal string
 	nameOfAnimal string
 	animalWeight int
-	feedingNorm  int
 	edibleAnimal bool
 	minWeight    int
 }
@@ -101,8 +98,8 @@ func (c cow) getAnimalWeight() int {
 }
 
 func (c cow) getFeedingNorm() int {
-	c.feedingNorm = feedingNormCow * c.animalWeight
-	return c.feedingNorm
+	feedingNorm := feedingNormCow * c.animalWeight
+	return feedingNorm
 }
 
 func (c cow) getEdibleAnimal() bool {
