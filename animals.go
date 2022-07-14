@@ -1,10 +1,20 @@
 package main
 
+var (
+	dogMinWeight   int = 5
+	catMinWeight   int = 2
+	cowMinWeight   int = 200
+	feedingNormDog int = 10 / 5
+	feedingNormCat int = 7
+	feedingNormCow int = 25
+)
+
 type dog struct {
 	typeOfAnimal string
 	nameOfAnimal string
 	animalWeight int
-	feedingNorm  int
+	edibleAnimal bool
+	minWeight    int
 }
 
 func (d dog) getTypeOfAnimal() string {
@@ -20,16 +30,25 @@ func (d dog) getAnimalWeight() int {
 }
 
 func (d dog) getFeedingNorm() int {
-	feedingNormDog := 10 / 5
-	d.feedingNorm = feedingNormDog * d.animalWeight
-	return d.feedingNorm
+	feedingNorm := feedingNormDog * d.animalWeight
+	return feedingNorm
+}
+
+func (d dog) getEdibleAnimal() bool {
+	return false
+}
+
+func (d dog) getMinWeight() int {
+	d.minWeight = dogMinWeight
+	return d.minWeight
 }
 
 type cat struct {
 	typeOfAnimal string
 	nameOfAnimal string
 	animalWeight int
-	feedingNorm  int
+	edibleAnimal bool
+	minWeight    int
 }
 
 func (c cat) getTypeOfAnimal() string {
@@ -45,16 +64,25 @@ func (c cat) getAnimalWeight() int {
 }
 
 func (c cat) getFeedingNorm() int {
-	feedingNormCat := 7
-	c.feedingNorm = feedingNormCat * c.animalWeight
-	return c.feedingNorm
+	feedingNorm := feedingNormCat * c.animalWeight
+	return feedingNorm
+}
+
+func (c cat) getEdibleAnimal() bool {
+	return false
+}
+
+func (c cat) getMinWeight() int {
+	c.minWeight = catMinWeight
+	return c.minWeight
 }
 
 type cow struct {
 	typeOfAnimal string
 	nameOfAnimal string
 	animalWeight int
-	feedingNorm  int
+	edibleAnimal bool
+	minWeight    int
 }
 
 func (c cow) getTypeOfAnimal() string {
@@ -70,7 +98,14 @@ func (c cow) getAnimalWeight() int {
 }
 
 func (c cow) getFeedingNorm() int {
-	feedingNormCow := 25
-	c.feedingNorm = feedingNormCow * c.animalWeight
-	return c.feedingNorm
+	feedingNorm := feedingNormCow * c.animalWeight
+	return feedingNorm
+}
+
+func (c cow) getEdibleAnimal() bool {
+	return true
+}
+func (c cow) getMinWeight() int {
+	c.minWeight = cowMinWeight
+	return c.minWeight
 }

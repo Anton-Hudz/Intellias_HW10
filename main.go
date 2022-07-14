@@ -1,12 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"reflect"
+)
 
 type Animals interface {
 	typeForAnimal
 	nameForAnimal
 	weightForAnimal
 	foodForAnimal
+	edibleForAnimal
+	minWeightForAnimal
 }
 
 type typeForAnimal interface {
@@ -24,37 +30,73 @@ type foodForAnimal interface {
 	getFeedingNorm() int
 }
 
+type edibleForAnimal interface {
+	getEdibleAnimal() bool
+}
+
+type minWeightForAnimal interface {
+	getMinWeight() int
+}
+
+var wrongAnimalTypeErr = errors.New("wrong type of animal")
+var animalUnderweightErr = errors.New("underweight animal")
+var animalNotEdibleErr = errors.New("this animal is not edible")
+
 func main() {
 	allAnimalsInFarm := []Animals{
 		dog{
-			typeOfAnimal: "Dog",
+			typeOfAnimal: "cow",
 			nameOfAnimal: "Dog11",
 			animalWeight: 15,
 		},
 		cat{
-			typeOfAnimal: "Cat",
+			typeOfAnimal: "cat",
 			nameOfAnimal: "Cat11",
 			animalWeight: 5,
 		},
 		cow{
-			typeOfAnimal: "Cow",
+			typeOfAnimal: "cow",
 			nameOfAnimal: "Cow11",
-			animalWeight: 300,
+			animalWeight: 199,
 		},
 		cow{
-			typeOfAnimal: "Cow",
+			typeOfAnimal: "cow",
 			nameOfAnimal: "Cow22",
 			animalWeight: 250,
 		},
 	}
-	resultAllFoodForAllAnimals := countingAmountOfFeed(allAnimalsInFarm)
+	resultAllFoodForAllAnimals, err := countingAmountOfFeed(allAnimalsInFarm)
+	if err != nil {
+		err = fmt.Errorf("Warning!!! Program stopped: %w", err)
+		fmt.Println(err)
+		return
+	}
 	fmt.Printf("All animals need %d kg of feed per month", resultAllFoodForAllAnimals)
 
 }
 
-func countingAmountOfFeed(allAnimalsInFarm []Animals) int {
+func countingAmountOfFeed(allAnimalsInFarm []Animals) (int, error) {
 	var result int
 	for _, v := range allAnimalsInFarm {
+		err := validateParametresOfAnimal(v)
+		if err != nil {
+			switch {
+			case errors.Is(err, wrongAnimalTypeErr):
+				err = fmt.Errorf("bag in validation: %w", err)
+				fmt.Println(err)
+				continue
+
+			case errors.Is(err, animalUnderweightErr):
+				err = fmt.Errorf("bag in validation: %w", err)
+				return 0, err
+
+			case errors.Is(err, animalNotEdibleErr):
+				err = fmt.Errorf("bag in validation: %w", err)
+				fmt.Println(err)
+				continue
+
+			}
+		}
 		result += v.getFeedingNorm()
 		fmt.Printf(
 			"Animal type: %s, name: %s, weight: %d kg, need feed per month: %d kg\n",
@@ -64,10 +106,54 @@ func countingAmountOfFeed(allAnimalsInFarm []Animals) int {
 			v.getFeedingNorm(),
 		)
 	}
-	return result
-
+	return result, nil
 }
 
+//ioa - instance of animal
+func validateParametresOfAnimal(ioa Animals) error {
+	if err := checkTypeOfAnimal(ioa); err != nil {
+		err = fmt.Errorf("specified animal type is '%s', but the correct type is'%s': %w", ioa.getTypeOfAnimal(),
+			reflect.TypeOf(ioa).Name(), err)
+		err = fmt.Errorf("for %s: %w", reflect.TypeOf(ioa).Name(), err)
+		return err
+	}
+	if err := checkAnimalWeight(ioa); err != nil {
+		err = fmt.Errorf("min weight for this animal is %d kg,\n but weight of this animal is %d kg: %w", ioa.getMinWeight(),
+			ioa.getAnimalWeight(), err)
+		err = fmt.Errorf("for %s: %w", reflect.TypeOf(ioa).Name(), err)
+		return err
+	}
+	if err := checkAnimalforEdible(ioa); err != nil {
+		err = fmt.Errorf("the edibility status is incorrectly indicated\n for '%s': %w", reflect.TypeOf(ioa).Name(), err)
+		err = fmt.Errorf("for %s: %w", reflect.TypeOf(ioa).Name(), err)
+		return err
+	}
+	return nil
+}
+
+func checkTypeOfAnimal(ioa Animals) error {
+	// if reflect.TypeOf(ioa).Name() != ioa.getTypeOfAnimal() {
+	if fmt.Sprintf("%T", ioa) != fmt.Sprintf("main.%s", ioa.getTypeOfAnimal()) {
+		return wrongAnimalTypeErr
+	}
+	return nil
+}
+
+func checkAnimalWeight(ioa Animals) error {
+	if ioa.getAnimalWeight() <= ioa.getMinWeight() {
+		return animalUnderweightErr
+	}
+	return nil
+}
+
+func checkAnimalforEdible(ioa Animals) error {
+	if reflect.TypeOf(ioa).Name() != "cow" && ioa.getEdibleAnimal() == true {
+		return animalNotEdibleErr
+	}
+	return nil
+}
+
+//1!!
 // Домашнє завдання по інтерфейсах:
 // кожна тварина в залежності від свого типу споживає різку кількість
 // кілограмів їжі на місяць
@@ -81,3 +167,22 @@ func countingAmountOfFeed(allAnimalsInFarm []Animals) int {
 // 2) вагу, та скільки їжі треба для того щоб її прогодувати
 // 3) ця функція також моє повертати сумму кг корму на всю ферму для
 // подальшого виводу у консоль
+
+// 2!!
+// створити PR до ферми
+// додати функцію, яка буде приймати параметр інтерфейсного типу і виконує в собі мати 3 етапів валідації.
+// кожен етап валідації - окрема функція що має повертати помилку
+// валідація 1 - чи співпадає тип тварини з тим як вона називаєтсья
+// валідація 2 - чи важить тварина меньше норми
+// валідація 3 - чи є тварина їстівною
+// якщо сталася помилка -  обгорнути її  на кожному етапі, додавши інформації як у прикладі.
+// викликати валідацію перед тим як рахувати загальну кількість корму для ферми
+// якщо сталася помилка - вивести її і припинити виконання програми
+// вкладеність помилки має бути:
+// помилка конкретної валідації
+// що саме пійшло не так
+// сказати що тварина не пройшла валідацію
+// утонити для якої тварини провалена перевірка
+// помилки можуть призводити до різних дій, на ваш розсуд можна обрати одну помилку яка зупеняє програму, а дві інші просто виводяться і ігнорується тільки конкретна тварина
+// приклад:
+// для собаки по імені "Боб": провалена валідація: боб насправді кіт: тип тварини має бути псом але їм не є
