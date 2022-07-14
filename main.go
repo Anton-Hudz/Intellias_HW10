@@ -38,14 +38,14 @@ type minWeightForAnimal interface {
 	getMinWeight() int
 }
 
-var wrongAnimalType = errors.New("wrong type of animal")
-var animalUnderweight = errors.New("underweight animal")
-var animalNotEdible = errors.New("this animal is not edible")
+var wrongAnimalTypeErr = errors.New("wrong type of animal")
+var animalUnderweightErr = errors.New("underweight animal")
+var animalNotEdibleErr = errors.New("this animal is not edible")
 
 func main() {
 	allAnimalsInFarm := []Animals{
 		dog{
-			typeOfAnimal: "cat",
+			typeOfAnimal: "cow",
 			nameOfAnimal: "Dog11",
 			animalWeight: 15,
 		},
@@ -69,9 +69,10 @@ func main() {
 	if err != nil {
 		err = fmt.Errorf("Warning!!! Program stopped: %w", err)
 		fmt.Println(err)
-	} else {
-		fmt.Printf("All animals need %d kg of feed per month", resultAllFoodForAllAnimals)
+		return
 	}
+	fmt.Printf("All animals need %d kg of feed per month", resultAllFoodForAllAnimals)
+
 }
 
 func countingAmountOfFeed(allAnimalsInFarm []Animals) (int, error) {
@@ -79,19 +80,21 @@ func countingAmountOfFeed(allAnimalsInFarm []Animals) (int, error) {
 	for _, v := range allAnimalsInFarm {
 		err := validateParametresOfAnimal(v)
 		if err != nil {
-			if errors.Is(err, wrongAnimalType) {
+			switch {
+			case errors.Is(err, wrongAnimalTypeErr):
 				err = fmt.Errorf("bag in validation: %w", err)
 				fmt.Println(err)
 				continue
 
-			} else if errors.Is(err, animalUnderweight) {
+			case errors.Is(err, animalUnderweightErr):
 				err = fmt.Errorf("bag in validation: %w", err)
 				return 0, err
 
-			} else if errors.Is(err, animalNotEdible) {
+			case errors.Is(err, animalNotEdibleErr):
 				err = fmt.Errorf("bag in validation: %w", err)
 				fmt.Println(err)
 				continue
+
 			}
 		}
 		result += v.getFeedingNorm()
@@ -108,22 +111,19 @@ func countingAmountOfFeed(allAnimalsInFarm []Animals) (int, error) {
 
 //ioa - instance of animal
 func validateParametresOfAnimal(ioa Animals) error {
-	err := checkTypeOfAnimal(ioa)
-	if err != nil {
+	if err := checkTypeOfAnimal(ioa); err != nil {
 		err = fmt.Errorf("specified animal type is '%s', but the correct type is'%s': %w", ioa.getTypeOfAnimal(),
 			reflect.TypeOf(ioa).Name(), err)
 		err = fmt.Errorf("for %s: %w", reflect.TypeOf(ioa).Name(), err)
 		return err
 	}
-	err = checkAnimalWeight(ioa)
-	if err != nil {
+	if err := checkAnimalWeight(ioa); err != nil {
 		err = fmt.Errorf("min weight for this animal is %d kg,\n but weight of this animal is %d kg: %w", ioa.getMinWeight(),
 			ioa.getAnimalWeight(), err)
 		err = fmt.Errorf("for %s: %w", reflect.TypeOf(ioa).Name(), err)
 		return err
 	}
-	err = checkAnimalforEdible(ioa)
-	if err != nil {
+	if err := checkAnimalforEdible(ioa); err != nil {
 		err = fmt.Errorf("the edibility status is incorrectly indicated\n for '%s': %w", reflect.TypeOf(ioa).Name(), err)
 		err = fmt.Errorf("for %s: %w", reflect.TypeOf(ioa).Name(), err)
 		return err
@@ -132,22 +132,23 @@ func validateParametresOfAnimal(ioa Animals) error {
 }
 
 func checkTypeOfAnimal(ioa Animals) error {
-	if reflect.TypeOf(ioa).Name() != ioa.getTypeOfAnimal() {
-		return wrongAnimalType
+	// if reflect.TypeOf(ioa).Name() != ioa.getTypeOfAnimal() {
+	if fmt.Sprintf("%T", ioa) != fmt.Sprintf("main.%s", ioa.getTypeOfAnimal()) {
+		return wrongAnimalTypeErr
 	}
 	return nil
 }
 
 func checkAnimalWeight(ioa Animals) error {
 	if ioa.getAnimalWeight() <= ioa.getMinWeight() {
-		return animalUnderweight
+		return animalUnderweightErr
 	}
 	return nil
 }
 
 func checkAnimalforEdible(ioa Animals) error {
 	if reflect.TypeOf(ioa).Name() != "cow" && ioa.getEdibleAnimal() == true {
-		return animalNotEdible
+		return animalNotEdibleErr
 	}
 	return nil
 }

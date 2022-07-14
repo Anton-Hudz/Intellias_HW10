@@ -105,7 +105,6 @@ func (c cow) getFeedingNorm() int {
 func (c cow) getEdibleAnimal() bool {
 	return true
 }
-
 func (c cow) getMinWeight() int {
 	c.minWeight = cowMinWeight
 	return c.minWeight
